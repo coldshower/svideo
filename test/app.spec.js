@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const React = require('react');
 const Search = require('../js/search');
 const ShowCard = require('../js/showcard');
-const { shallow } = require('enzyme');
+const { shallow, mount } = require('enzyme');
 const { shows } = require('../public/data');
 
 describe('<Search />', () => {
@@ -15,5 +15,14 @@ describe('<Search />', () => {
 		const wrapper = shallow(<Search/>);
 		
 		expect(wrapper.find(ShowCard).length).to.equal(shows.length);
+	});
+
+	it('should filter correctly given new state', () => {
+		const wrapper = mount(<Search/>);
+		const input = wrapper.find('.search-input');
+		input.node.value = 'house';
+		input.simulate('change');
+		expect(wrapper.state('searchTerm')).to.equal('house');
+		expect(wrapper.find(ShowCard).length).to.equal(2);
 	});
 });

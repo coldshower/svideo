@@ -1,6 +1,6 @@
 const React = require('react');
-const data = require('../public/data');
 const ShowCard = require('./showcard');
+const { arrayOf, object } = React.PropTypes;
 
 class Search extends React.Component {
 	constructor (props) {
@@ -21,7 +21,7 @@ class Search extends React.Component {
 					<input className="search-input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.handleSearchTermChange}/>
 				</header>
 				<div className="shows">
-					{data.shows
+					{this.props.shows
 					.filter(show => {
 						const searchTerm = this.state.searchTerm.toUpperCase();
 						return (show.title + show.description).toUpperCase().indexOf(searchTerm) > -1;
@@ -34,5 +34,9 @@ class Search extends React.Component {
 		);
 	}
 }
+
+Search.propTypes = {
+	shows: arrayOf(object)
+};
 
 module.exports = Search;

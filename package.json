@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "test": "mocha --require test/helpers/setup.js"
+    "test": "mocha --require test/helpers/setup.js",
+    "cover": "nyc --reporter=lcov --reporter=text --reporter=html --require babel-register --extension .jsx npm run test"
   },
   "author": "Brian Holt <btholt@gmail.com>",
   "license": "MIT",
