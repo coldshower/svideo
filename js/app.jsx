@@ -13,17 +13,38 @@ const Route = ReactRouter.Route;
 const hashHistory = ReactRouter.hashHistory;
 const IndexRoute = ReactRouter.IndexRoute;
 
+const { store } = require('./store');
+const { Provider } = require('react-redux');
+
 // OR
 // const {Router, Route, hashHistory} = require('react-router');
 
-const App = () => (
-	<Router history={hashHistory}>
-		<Route path="/" component={Layout}>
-			<IndexRoute component={Landing} />
-			<Route path="/search" component={Search} shows={shows} />
-			<Route path="/details/:id" component={Details} />
-		</Route>
-	</Router>
-);
+class App extends React.Component {
+	assignShow (nextState, replace) {
+		const showsArray = shows.filter(show => {
+			return nextState.params.id === show.imdbID;
+		});
+
+		if (showsArray.length < 1) {
+			return replace('/');
+		} 
+		Object.assign(nextState.params, showsArray[0]);
+		return nextState;
+	}
+	render () {
+		return (
+			<Provider store={store}>
+				<Router history={hashHistory}>
+					<Route path="/" component={Layout}>
+						<IndexRoute component={Landing} />
+						<Route path="/search" component={Search} shows={shows} />
+						<Route path="/details/:id" component={Details} onEnter={this.assignShow} />
+					</Route>
+				</Router>
+			</Provider>
+		)
+	}
+}
+
 
 ReactDOM.render(<App />, document.getElementById('app'));
