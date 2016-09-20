@@ -1,11 +1,39 @@
 const React = require('react');
 const Header = require('./header');
+const { connector } = require('./store');
+const axios = require('axios');
 
 class Details extends React.Component {
-	render () {
-		const params = this.props.params || {};
-		const { title, description, year, poster, trailer } = params;
+	constructor (props) {
+		super(props);
+		this.state = {
+			omdbData: {}
+		}
+	}
+	componentDidMount () {
+		axios.get('http://www.omdbapi.com/?i=' + this.props.shows[this.props.params.id].imdbID)
+		.then(res => {
+			this.setState({omdbData: res.data});
+		})
+		.catch(console.error.bind(console));
+	}
+	assignShow (id) {
+		const showArray = this.props.shows.filter(show => {
+			return show.imdbId === id;
+		});
+		return showArray[0];
+	}
 
+	render () {
+		const { title, description, year, poster, trailer } = this.assignShow(this.props.params.id);
+		let rating;
+		if (this.state.omdbData.imdbRating) {
+			rating = (
+				<h3 className="video-rating">
+					{this.stateomdbData.imdbRating}
+				</h3>
+			)
+		}
 		return (
 			<div className="container">
 				<Header />
@@ -16,6 +44,7 @@ class Details extends React.Component {
 					<h2 className="video-year">
 						({year})
 					</h2>
+					{rating}
 					<img className="video-poster" src={ 'public/img/posters/' + poster } />
 					<p className="video-description">{description}</p>
 				</div>
@@ -27,8 +56,11 @@ class Details extends React.Component {
 	}
 }
 
+const { arrayOf, object } = React.PropTypes;
+
 Details.propTypes = {
-	params: React.PropTypes.object.isRequired
+	params: object,
+	shows: arrayOf(object).isRequired,
 };
 
-module.exports = Details;
+module.exports = connector(Details);

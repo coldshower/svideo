@@ -14,7 +14,6 @@ class Header extends React.Component {
 	}
 
 	render () {
-		console.log(this.props.searchTerm);
 		let utilSpace;
 		if (this.props.showSearch) {
 			utilSpace = 
